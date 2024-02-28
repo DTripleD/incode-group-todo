@@ -22,7 +22,7 @@ function App() {
     <Routes>
       <Route index element={<Dashboard data={data} />} />
 
-      <Route path="/:board" element={<Board data={data} />} />
+      <Route path="/:board" element={<Board />} />
       {/* <Route path="/:category" element={<CategoryPage />} /> */}
     </Routes>
   );

@@ -6,18 +6,37 @@ import { userSelector } from "../../redux/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addNew, moveCard } from "../../redux/slice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const Board = ({ data }: { data: any }) => {
-  const columnsFromBackend = useSelector(userSelector);
-  const [columns, setColumns] = useState(columnsFromBackend);
-
+const Board = () => {
   const { board } = useParams();
 
-  const data1 = data.filter((item) => item._id === board);
+  const columnsFromBackend = useSelector(userSelector);
+  const [columns, setColumns] = useState([]);
 
-  console.log(data1[0].boards);
+  useEffect(() => {
+    fetch(`https://incode-group-server.onrender.com/users/dashboard/${board}`)
+      .then((res) => res.json())
+      .then((data) => setColumns(data.dashboard.boards))
+      .catch((error) => console.log(error));
+  }, [board]);
+
+  useEffect(() => {
+    fetch(
+      "https://incode-group-server.onrender.com/users/dashboard/updateBoards",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ dashboardId: board, newBoards: columns }),
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => console.log("Backend updated:", data))
+      .catch((error) => console.log(error));
+  }, [columns, board]);
 
   console.log(columns);
 
