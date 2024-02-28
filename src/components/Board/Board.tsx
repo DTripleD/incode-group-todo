@@ -7,14 +7,21 @@ import { userSelector } from "../../redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { addNew, moveCard } from "../../redux/slice";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
-const Board = () => {
+const Board = ({ data }: { data: any }) => {
   const columnsFromBackend = useSelector(userSelector);
   const [columns, setColumns] = useState(columnsFromBackend);
 
-  const dispatch = useDispatch();
+  const { board } = useParams();
 
-  console.log(columnsFromBackend);
+  const data1 = data.filter((item) => item._id === board);
+
+  console.log(data1[0].boards);
+
+  console.log(columns);
+
+  const dispatch = useDispatch();
 
   const addNewCard = (columnId: string) => {
     dispatch(addNew(columnId));
