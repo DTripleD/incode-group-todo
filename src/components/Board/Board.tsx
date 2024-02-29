@@ -20,18 +20,18 @@ const Board = () => {
       .catch((error) => console.log(error));
   }, [board]);
 
-  useEffect(() => {
-    fetch("https://incode-group-server.onrender.com/dashboard/updateBoards", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ dashboardId: board, newBoards: columns }),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
-  }, [columns, board]);
+  // useEffect(() => {
+  //   fetch("https://incode-group-server.onrender.com/dashboard/updateBoards", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ dashboardId: board, newBoards: columns }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => console.log(data))
+  //     .catch((error) => console.log(error));
+  // }, [columns, board]);
 
   const addNewCard = (e) => {
     e.preventDefault();
