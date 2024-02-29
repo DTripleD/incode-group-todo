@@ -2,48 +2,77 @@ import Card from "../Card/Card";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
 import { Container, TaskColumnStyles, TaskList, Title } from "./Board.styled";
 
-import { userSelector } from "../../redux/selectors";
-
-import { useDispatch, useSelector } from "react-redux";
-import { addNew, moveCard } from "../../redux/slice";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 const Board = () => {
   const { board } = useParams();
 
-  const columnsFromBackend = useSelector(userSelector);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
-    fetch(`https://incode-group-server.onrender.com/users/dashboard/${board}`)
+    fetch(`https://incode-group-server.onrender.com/dashboard/${board}`)
       .then((res) => res.json())
       .then((data) => setColumns(data.dashboard.boards))
       .catch((error) => console.log(error));
   }, [board]);
 
   useEffect(() => {
-    fetch(
-      "https://incode-group-server.onrender.com/users/dashboard/updateBoards",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ dashboardId: board, newBoards: columns }),
-      }
-    )
+    fetch("https://incode-group-server.onrender.com/dashboard/updateBoards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ dashboardId: board, newBoards: columns }),
+    })
       .then((res) => res.json())
-      .then((data) => console.log("Backend updated:", data))
+      .then((data) => console.log(data))
       .catch((error) => console.log(error));
   }, [columns, board]);
 
-  console.log(columns);
+  const addNewCard = (e) => {
+    e.preventDefault();
 
-  const dispatch = useDispatch();
+    fetch("https://incode-group-server.onrender.com/dashboard/addDataToBoard", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        dashboardId: board,
+        newData: {
+          id: "5",
+          title: e.target.title.value,
+          description: e.target.description.value || "",
+        },
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => setColumns(data.dashboard.boards))
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setIsEditing(false);
+        e.target.reset();
+      });
+  };
 
-  const addNewCard = (columnId: string) => {
-    dispatch(addNew(columnId));
+  const deleteCard = (cardId) => {
+    fetch("https://incode-group-server.onrender.com/dashboard/deleteItem", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        dashboardId: board,
+        itemId: cardId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error));
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -82,44 +111,13 @@ const Board = () => {
     }
   };
 
-  // const onDragEnd = (result: DropResult) => {
-  //   if (!result.destination) return;
-
-  //   console.log(result);
-
-  //   const { source, destination } = result;
-
-  //   console.log(destination);
-
-  //   const sourceColumnId = source.droppableId;
-  //   const destColumnId = destination.droppableId;
-
-  //   if (sourceColumnId !== destColumnId) {
-  //     dispatch(
-  //       moveCard({
-  //         source: sourceColumnId,
-  //         destination: destColumnId,
-  //         index: destination.index,
-  //       })
-  //     );
-  //   } else {
-  //     dispatch(
-  //       moveCard({
-  //         source: sourceColumnId,
-  //         destination: destColumnId,
-  //         index: source.index,
-  //       })
-  //     );
-  //   }
-  // };
-
   return (
     <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
       <Container>
         <TaskColumnStyles>
           {Object.entries(columns).map(([columnId, column]) => {
             return (
-              <Droppable key={columnId} droppableId={columnId}>
+              <Droppable key={column.id} droppableId={columnId}>
                 {(provided) => (
                   <TaskList
                     ref={provided.innerRef}
@@ -128,17 +126,38 @@ const Board = () => {
                     <Title>{column.title}</Title>
 
                     {column?.items?.map((item, index) => (
-                      <Card key={item.id} item={item} index={index} />
+                      <Card
+                        key={item.id}
+                        item={item}
+                        index={index}
+                        deleteCard={deleteCard}
+                        board={board}
+                      />
                     ))}
                     {provided.placeholder}
-                    {column.title === "To Do" && (
-                      <button
-                        type="button"
-                        onClick={() => addNewCard(columnId)}
-                      >
-                        +
-                      </button>
-                    )}
+                    {column.title === "To Do" &&
+                      (isEditing ? (
+                        <form onSubmit={addNewCard}>
+                          <input
+                            type="text"
+                            placeholder="Title of card"
+                            name="title"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Description of card"
+                            name="description"
+                          />
+                          <button type="submit">Add</button>
+                        </form>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setIsEditing(true)}
+                        >
+                          <Plus />
+                        </button>
+                      ))}
                   </TaskList>
                 )}
               </Droppable>

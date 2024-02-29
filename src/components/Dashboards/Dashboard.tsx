@@ -1,50 +1,52 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
+import { BoardList } from "./Dashboard.styled";
+
+import DashboardItem from "../DashboardItem/DashboardItem";
+
+import { useDispatch, useSelector } from "react-redux";
+import { createBoardd, getData, deleteBoardd } from "../../redux/operations";
+import { dataSelector } from "../../redux/selectors";
 
 const Dashboard = () => {
   const [creating, setCreating] = useState(false);
 
-  const [data, setData] = useState([]);
+  const data = useSelector(dataSelector);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch("https://incode-group-server.onrender.com/users/dashboard")
-      .then((res) => res.json())
-      .then((data) => setData(data.dashboards))
-      .catch((error) => console.log(error));
-  }, []);
+    dispatch(getData());
+  }, [dispatch]);
 
   const createBoard = (e) => {
     e.preventDefault();
 
-    fetch("https://incode-group-server.onrender.com/users/dashboard", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title: e.target.input.value }),
-    })
-      .then((res) => res.json())
-      .then((data) =>
-        setData((prev) => {
-          return [...prev, data.dashboard];
-        })
-      )
-      .catch((error) => console.log(error));
+    dispatch(createBoardd(e.target.input.value));
   };
 
-  console.log(data);
+  const deleteBoard = (boardId: string) => {
+    dispatch(deleteBoardd(boardId));
+  };
 
   return (
     <div>
-      {data.map((board) => (
-        <Link key={board._id} to={board._id}>
-          <p>{board.title}</p>
-        </Link>
-      ))}
+      <BoardList>
+        {data.map((board) => (
+          <DashboardItem
+            key={board._id}
+            board={board}
+            deleteBoard={deleteBoard}
+          />
+        ))}
+      </BoardList>
       {creating ? (
         <form onSubmit={createBoard}>
           <input placeholder="Name of board" name="input" />
           <button type="submit">Add</button>
+          <button type="button" onClick={() => setCreating((prev) => !prev)}>
+            Close
+          </button>
         </form>
       ) : (
         <button onClick={() => setCreating(true)}>Create new board</button>
