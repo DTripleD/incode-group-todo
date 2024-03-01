@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios from "axios";
 
-const instance = axios.create({
+export const instance = axios.create({
   baseURL: "https://incode-group-server.onrender.com",
 });
 
@@ -18,7 +18,9 @@ export const createBoardd = createAsyncThunk(
         return rejectWithValue("Failed to delete cocktail");
       }
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
     }
   }
 );
@@ -32,10 +34,12 @@ export const getData = createAsyncThunk(
       if (response.status === 200) {
         return response.data.dashboards;
       } else {
-        return rejectWithValue("Failed to delete cocktail");
+        return rejectWithValue({ payload: "Failed to get info" });
       }
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
     }
   }
 );
@@ -52,7 +56,9 @@ export const deleteBoardd = createAsyncThunk(
         return rejectWithValue("Failed to delete cocktail");
       }
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
     }
   }
 );
@@ -71,7 +77,9 @@ export const updateBoardNamee = createAsyncThunk(
         return rejectWithValue("Failed to delete cocktail");
       }
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
     }
   }
 );

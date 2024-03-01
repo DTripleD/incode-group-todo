@@ -9,7 +9,7 @@ export const TaskList = styled.div`
   display: flex;
   flex-direction: column;
   background: #f3f3f3;
-  min-width: 341px;
+  width: 341px;
   border-radius: 5px;
   padding: 15px 15px;
   margin-right: 45px;
@@ -30,4 +30,15 @@ export const Title = styled.span`
   padding: 2px 10px;
   border-radius: 5px;
   align-self: flex-start;
+`;
+
+export const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px;
 `;

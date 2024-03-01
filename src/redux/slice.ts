@@ -8,7 +8,7 @@ import {
 } from "./operations";
 
 const initialState = {
-  dashboards: [{ _id: null, title: null }],
+  dashboards: [{ _id: null, title: null, boards: [{}] }],
 };
 
 const userSlice = createSlice({

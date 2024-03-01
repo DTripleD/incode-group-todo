@@ -1,31 +1,34 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { TaskInformation } from "./Card.styled";
+import {
+  ButtonWrapper,
+  StyledForm,
+  StyledInput,
+  TaskInformation,
+} from "./Card.styled";
 import { useState } from "react";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
+import { deleteCard } from "../../redux/board/boardOperations";
+import { useDispatch } from "react-redux";
 
 interface CardProps {
   item: {
     id: string;
     title: string;
     description: string;
+    _id: string;
   };
   index: number;
-  board: string;
-  deleteCard: (cardId: number) => void;
+  board: string | undefined;
 }
 
-const Card = ({ item, index, deleteCard, board }: CardProps) => {
+const Card = ({ item, index, board }: CardProps) => {
   const [isEditing, setIsEditing] = useState(false);
-
   const [editedTitle, setEditedTitle] = useState(item.title);
-
   const [editedDescription, setEditedDescription] = useState(item.description);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedTitle(e.target.value);
-  };
+  const dispatch = useDispatch();
 
-  const updateCardName = (e) => {
+  const updateCardName = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     fetch(
@@ -49,8 +52,6 @@ const Card = ({ item, index, deleteCard, board }: CardProps) => {
       .finally(() => setIsEditing((prev) => !prev));
   };
 
-  console.log(editedTitle);
-
   return (
     <Draggable key={item.id} draggableId={item.id} index={index}>
       {(provided) => (
@@ -61,43 +62,56 @@ const Card = ({ item, index, deleteCard, board }: CardProps) => {
         >
           <TaskInformation>
             {isEditing ? (
-              <form onSubmit={updateCardName}>
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={handleTitleChange}
-                />
+              <StyledForm onSubmit={updateCardName}>
+                <div>
+                  <StyledInput
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                  />
 
-                <input
-                  type="text"
-                  value={editedDescription}
-                  onChange={(e) => setEditedDescription(e.target.value)}
-                />
-
-                <button type="submit">
-                  <Check />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsEditing((prev) => !prev)}
-                >
-                  <X />
-                </button>
-              </form>
+                  <StyledInput
+                    type="text"
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                  />
+                </div>
+                <ButtonWrapper>
+                  <button type="submit">
+                    <Check />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing((prev) => !prev)}
+                  >
+                    <X />
+                  </button>
+                </ButtonWrapper>
+              </StyledForm>
             ) : (
               <>
-                <p>{item.title}</p>
-                <div className="secondary-details">
-                  <p>
-                    <span>{item.description}</span>
-                  </p>
+                <div>
+                  <p>{item.title}</p>
+                  <span className="secondary-details">{item.description}</span>
                 </div>
-                <button onClick={() => setIsEditing((prev) => !prev)}>
-                  <SquarePen />
-                </button>
-                <button onClick={() => deleteCard(item._id)}>
-                  <Trash2 />
-                </button>
+
+                <ButtonWrapper>
+                  <button onClick={() => setIsEditing((prev) => !prev)}>
+                    <SquarePen />
+                  </button>
+                  <button
+                    onClick={() => {
+                      dispatch(
+                        deleteCard({
+                          dashboardId: board,
+                          itemId: item._id,
+                        })
+                      );
+                    }}
+                  >
+                    <Trash2 />
+                  </button>
+                </ButtonWrapper>
               </>
             )}
           </TaskInformation>

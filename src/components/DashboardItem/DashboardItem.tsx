@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { SquarePen, Trash2 } from "lucide-react";
-import { BoardItem } from "./DashboardItem.styled";
+import { Check, SquarePen, Trash2, X } from "lucide-react";
+import { BoardItem, StyledForm, StyledInput } from "./DashboardItem.styled";
 import { useDispatch } from "react-redux";
 import { updateBoardNamee } from "../../redux/operations";
 
-const DashboardItem = ({
-  board,
-  deleteBoard,
-}: {
-  board: any;
-  deleteBoard: (boardId: string) => void;
-}) => {
+const DashboardItem = ({ board, deleteBoard }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [editedTitle, setEditedTitle] = useState(board.title);
@@ -29,24 +23,22 @@ const DashboardItem = ({
     ).then(() => setIsEditing((prev) => !prev));
   };
 
-  const handleTitleChange = (e) => {
-    setEditedTitle(e.target.value);
-  };
-
   return (
     <BoardItem>
       {isEditing ? (
-        <form onSubmit={updateBoardName}>
-          <input
+        <StyledForm onSubmit={updateBoardName}>
+          <StyledInput
             name="input"
             value={editedTitle}
-            onChange={handleTitleChange}
+            onChange={(e) => setEditedTitle(e.target.value)}
           />
-          <button type="submit">Upd</button>
-          <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
-            close
+          <button type="submit">
+            <Check />
           </button>
-        </form>
+          <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
+            <X />
+          </button>
+        </StyledForm>
       ) : (
         <>
           <Link to={board._id}>

@@ -1,78 +1,66 @@
 import Card from "../Card/Card";
 import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
-import { Container, TaskColumnStyles, TaskList, Title } from "./Board.styled";
+import {
+  ButtonWrapper,
+  Container,
+  StyledForm,
+  TaskColumnStyles,
+  TaskList,
+  Title,
+} from "./Board.styled";
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { addCard, getColums } from "../../redux/board/boardOperations";
+import { boardSelector } from "../../redux/selectors";
+import { AppDispatch } from "../../redux/store";
 
 const Board = () => {
   const { board } = useParams();
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [columns, setColumns] = useState([]);
+  const [d, setColumns] = useState([]);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const columns = useSelector(boardSelector);
 
   useEffect(() => {
-    fetch(`https://incode-group-server.onrender.com/dashboard/${board}`)
-      .then((res) => res.json())
-      .then((data) => setColumns(data.dashboard.boards))
-      .catch((error) => console.log(error));
-  }, [board]);
+    dispatch(getColums(board));
+  }, [board, dispatch]);
 
-  // useEffect(() => {
-  //   fetch("https://incode-group-server.onrender.com/dashboard/updateBoards", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ dashboardId: board, newBoards: columns }),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => console.log(data))
-  //     .catch((error) => console.log(error));
-  // }, [columns, board]);
-
-  const addNewCard = (e) => {
-    e.preventDefault();
-
-    fetch("https://incode-group-server.onrender.com/dashboard/addDataToBoard", {
+  useEffect(() => {
+    fetch("https://incode-group-server.onrender.com/dashboard/updateBoards", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: JSON.stringify({ dashboardId: board, newBoards: columns }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data.dashboard.boards))
+      .catch((error) => console.log(error));
+  }, [columns, board]);
+
+  const addNewCard = (e) => {
+    e.preventDefault();
+
+    dispatch(
+      addCard({
         dashboardId: board,
         newData: {
-          id: "5",
           title: e.target.title.value,
           description: e.target.description.value || "",
         },
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => setColumns(data.dashboard.boards))
-      .catch((error) => console.log(error))
-      .finally(() => {
-        setIsEditing(false);
-        e.target.reset();
-      });
-  };
-
-  const deleteCard = (cardId) => {
-    fetch("https://incode-group-server.onrender.com/dashboard/deleteItem", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        dashboardId: board,
-        itemId: cardId,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error));
+      })
+    ).finally(() => {
+      setIsEditing(false);
+      e.target.reset();
+    });
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -101,6 +89,7 @@ const Board = () => {
       const copiedItems = [...column.items];
       const [removed] = copiedItems.splice(source.index, 1);
       copiedItems.splice(destination.index, 0, removed);
+      // напрямую диспатчить то что делаеться в useEffect
       setColumns({
         ...columns,
         [source.droppableId]: {
@@ -130,14 +119,13 @@ const Board = () => {
                         key={item.id}
                         item={item}
                         index={index}
-                        deleteCard={deleteCard}
                         board={board}
                       />
                     ))}
                     {provided.placeholder}
                     {column.title === "To Do" &&
                       (isEditing ? (
-                        <form onSubmit={addNewCard}>
+                        <StyledForm onSubmit={addNewCard}>
                           <input
                             type="text"
                             placeholder="Title of card"
@@ -148,8 +136,18 @@ const Board = () => {
                             placeholder="Description of card"
                             name="description"
                           />
-                          <button type="submit">Add</button>
-                        </form>
+                          <ButtonWrapper>
+                            <button type="submit">
+                              <Check />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setIsEditing((prev) => !prev)}
+                            >
+                              <X />
+                            </button>
+                          </ButtonWrapper>
+                        </StyledForm>
                       ) : (
                         <button
                           type="button"
