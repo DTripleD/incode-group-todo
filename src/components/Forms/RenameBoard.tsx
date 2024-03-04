@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Check, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 
@@ -23,7 +24,9 @@ const RenameBoard = ({ board, item, setIsEditing }) => {
         newTitle: editedTitle,
         newDescription: editedDescription,
       })
-    ).finally(() => setIsEditing((prev) => !prev));
+    )
+      .then(() => toast.success("Card renamed succesfully"))
+      .finally(() => setIsEditing((prev) => !prev));
   };
 
   return (

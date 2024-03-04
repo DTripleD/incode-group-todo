@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
@@ -32,7 +33,10 @@ const DashboardItem = ({ board }: DashboardItemProps) => {
         dashboardId: board._id,
         newTitle: e.target.elements.input.value,
       })
-    ).then(() => setIsEditing((prev) => !prev));
+    ).then(() => {
+      setIsEditing((prev) => !prev);
+      toast.success("Board rename sucesfully");
+    });
   };
 
   return (
@@ -67,7 +71,13 @@ const DashboardItem = ({ board }: DashboardItemProps) => {
           <button onClick={() => setIsEditing((prev) => !prev)}>
             <SquarePen />
           </button>
-          <button onClick={() => dispatch(deleteBoard(board._id))}>
+          <button
+            onClick={() =>
+              dispatch(deleteBoard(board._id)).then(() =>
+                toast.success("Dasbord deleted succesfully")
+              )
+            }
+          >
             <Trash2 />
           </button>
         </>

@@ -17,6 +17,7 @@ The backend is available at the [link](https://github.com/DTripleD/incode-group-
 - [React Loader Spinner](https://mhnpd.github.io/react-loader-spinner/)
 - [Modern Normalize](https://github.com/sindresorhus/modern-normalize)
 - [react-redux](https://react-redux.js.org/)
+- [React Hot Toast](https://react-hot-toast.com/)
 
 ## Live page
 

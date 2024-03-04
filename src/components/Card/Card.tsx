@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Draggable } from "@hello-pangea/dnd";
 import { SquarePen, Trash2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,7 +56,7 @@ const Card = ({ item, index, board }: CardProps) => {
                           dashboardId: board,
                           itemId: item._id,
                         })
-                      );
+                      ).then(() => toast.success("Card deleted succesfully"));
                     }}
                   >
                     <Trash2 />

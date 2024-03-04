@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Check, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 
@@ -21,6 +22,7 @@ const CreateNewCard = ({ setIsEditing, board }) => {
         },
       })
     ).finally(() => {
+      toast.success("Card added");
       setIsEditing(false);
       e.target.reset();
     });

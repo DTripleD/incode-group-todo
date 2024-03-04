@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Check, X } from "lucide-react";
 import { useDispatch } from "react-redux";
 
@@ -11,10 +12,12 @@ const CreateNewBoard = ({ setCreating }) => {
 
   const handleCreateBoard = (e) => {
     e.preventDefault();
-    dispatch(createBoard(e.target.input.value)).then(() => {
-      setCreating(false);
-      e.target.reset();
-    });
+    dispatch(createBoard(e.target.input.value))
+      .then(() => {
+        setCreating(false);
+        e.target.reset();
+      })
+      .then(() => toast.success("Dashboard create succesfully"));
   };
 
   return (

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import Loader from "../../components/Loader/Loader";
 import CreateNewBoard from "../../components/Forms/CreateNewBoard";
 import DashboardItem from "../../components/DashboardItem/DashboardItem";
 import { BoardList, CreateButton, CreateWrapper } from "./DashboardPage.styled";
 
 import { AppDispatch } from "../../redux/store";
-import { dataSelector } from "../../redux/selectors";
 import { getData } from "../../redux/dashboard/dashboardOperations";
+import { dataSelector, isLoadingBoardSelector } from "../../redux/selectors";
 
 const Dashboard = () => {
   const [creating, setCreating] = useState(false);
 
   const data = useSelector(dataSelector);
+
+  const isLoading = useSelector(isLoadingBoardSelector);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -20,7 +23,9 @@ const Dashboard = () => {
     dispatch(getData());
   }, [dispatch]);
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div>
       <BoardList>
         {data.map((board) => (
