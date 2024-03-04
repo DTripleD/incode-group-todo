@@ -23,17 +23,7 @@ export const TaskInformation = styled.div`
   }
 `;
 
-export const StyledInput = styled.input`
-  /* text-align: center; */
-`;
-
 export const ButtonWrapper = styled.div`
   display: flex;
   gap: 20px;
-`;
-
-export const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 `;

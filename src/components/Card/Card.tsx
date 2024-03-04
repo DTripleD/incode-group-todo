@@ -1,58 +1,28 @@
-import { Draggable } from "@hello-pangea/dnd";
-import {
-  ButtonWrapper,
-  StyledForm,
-  StyledInput,
-  TaskInformation,
-} from "./Card.styled";
 import { useState } from "react";
-import { Check, SquarePen, Trash2, X } from "lucide-react";
-import { deleteCard } from "../../redux/board/boardOperations";
-import { useDispatch } from "react-redux";
+import { Draggable } from "@hello-pangea/dnd";
+import { SquarePen, Trash2 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 
-interface CardProps {
-  item: {
-    id: string;
-    title: string;
-    description: string;
-    _id: string;
-  };
-  index: number;
-  board: string | undefined;
-}
+import Loader from "../Loader/Loader";
+import RenameBoard from "../Forms/RenameBoard";
+import { ButtonWrapper, TaskInformation } from "./Card.styled";
+
+import { CardProps } from "../../types/types";
+
+import { AppDispatch } from "../../redux/store";
+import { isLoadingCardSelector } from "../../redux/selectors";
+import { deleteCard } from "../../redux/board/boardOperations";
 
 const Card = ({ item, index, board }: CardProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(item.title);
-  const [editedDescription, setEditedDescription] = useState(item.description);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const updateCardName = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const isLoading = useSelector(isLoadingCardSelector);
 
-    fetch(
-      "https://incode-group-server.onrender.com/dashboard/updateItemTitle",
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          dashboardId: board,
-          itemId: item._id,
-          newTitle: editedTitle,
-          newDescription: editedDescription,
-        }),
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error))
-      .finally(() => setIsEditing((prev) => !prev));
-  };
-
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <Draggable key={item.id} draggableId={item.id} index={index}>
       {(provided) => (
         <div
@@ -62,32 +32,11 @@ const Card = ({ item, index, board }: CardProps) => {
         >
           <TaskInformation>
             {isEditing ? (
-              <StyledForm onSubmit={updateCardName}>
-                <div>
-                  <StyledInput
-                    type="text"
-                    value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
-                  />
-
-                  <StyledInput
-                    type="text"
-                    value={editedDescription}
-                    onChange={(e) => setEditedDescription(e.target.value)}
-                  />
-                </div>
-                <ButtonWrapper>
-                  <button type="submit">
-                    <Check />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing((prev) => !prev)}
-                  >
-                    <X />
-                  </button>
-                </ButtonWrapper>
-              </StyledForm>
+              <RenameBoard
+                board={board}
+                item={item}
+                setIsEditing={setIsEditing}
+              />
             ) : (
               <>
                 <div>

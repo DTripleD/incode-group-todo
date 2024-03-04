@@ -1,13 +1,20 @@
-import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import Board from "./components/Board/Board";
-import Dashboard from "./components/Dashboards/Dashboard";
+
+import { lazy } from "react";
+import { Route, Routes } from "react-router-dom";
+
+import SharedLayout from "./components/SharedLayout/SharedLayout";
+
+const BoardPage = lazy(() => import("./pages/Board/BoardPage"));
+const DashboardPage = lazy(() => import("./pages/Dashboard/DashboardPage"));
 
 function App() {
   return (
     <Routes>
-      <Route index element={<Dashboard />} />
-      <Route path="/:board" element={<Board />} />
+      <Route path="/" element={<SharedLayout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="/:board" element={<BoardPage />} />
+      </Route>
     </Routes>
   );
 }

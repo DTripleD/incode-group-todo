@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { userReducer } from "./slice";
 import { boardReducer } from "./board/boardSlice";
+import { todoReducer } from "./dashboard/dashboardSlice";
 
 export const store = configureStore({
   reducer: {
-    todo: userReducer,
+    todo: todoReducer,
     board: boardReducer,
   },
 });

@@ -6,9 +6,9 @@ export const instance = axios.create({
   baseURL: "https://incode-group-server.onrender.com",
 });
 
-export const createBoardd = createAsyncThunk(
+export const createBoard = createAsyncThunk(
   "todo/createBoard",
-  async (title, { rejectWithValue }) => {
+  async (title: string, { rejectWithValue }) => {
     try {
       const response = await instance.post("dashboard", { title });
 
@@ -44,9 +44,9 @@ export const getData = createAsyncThunk(
   }
 );
 
-export const deleteBoardd = createAsyncThunk(
-  "todo/deleteBoardd",
-  async (dashboardId, { rejectWithValue }) => {
+export const deleteBoard = createAsyncThunk(
+  "todo/deleteBoard",
+  async (dashboardId: string, { rejectWithValue }) => {
     try {
       const response = await instance.delete(`dashboard/${dashboardId}`);
 
@@ -63,13 +63,17 @@ export const deleteBoardd = createAsyncThunk(
   }
 );
 
-export const updateBoardNamee = createAsyncThunk(
-  "todo/updateBoardNamee",
-  async (data, { rejectWithValue }) => {
+export const updateBoardName = createAsyncThunk(
+  "todo/updateBoardName",
+  async (
+    data: {
+      dashboardId: string;
+      newTitle: string;
+    },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await instance.put("dashboard", data);
-
-      console.log(response.data);
 
       if (response.status === 200) {
         return response.data.dashboard;

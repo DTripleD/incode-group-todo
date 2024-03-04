@@ -1,24 +1,36 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Check, SquarePen, Trash2, X } from "lucide-react";
-import { BoardItem, StyledForm, StyledInput } from "./DashboardItem.styled";
-import { useDispatch } from "react-redux";
-import { updateBoardNamee } from "../../redux/operations";
 
-const DashboardItem = ({ board, deleteBoard }) => {
+import Loader from "../Loader/Loader";
+import { BoardItem, StyledForm, StyledInput } from "./DashboardItem.styled";
+
+import { DashboardItemProps } from "../../types/types";
+
+import {
+  deleteBoard,
+  updateBoardName,
+} from "../../redux/dashboard/dashboardOperations";
+import { isLoadingBoardSelector } from "../../redux/selectors";
+import { AppDispatch } from "../../redux/store";
+
+const DashboardItem = ({ board }: DashboardItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [editedTitle, setEditedTitle] = useState(board.title);
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const updateBoardName = (e) => {
+  const isLoading = useSelector(isLoadingBoardSelector);
+
+  const handleUpdateBoardName = (e) => {
     e.preventDefault();
 
     dispatch(
-      updateBoardNamee({
+      updateBoardName({
         dashboardId: board._id,
-        newTitle: e.target.input.value,
+        newTitle: e.target.elements.input.value,
       })
     ).then(() => setIsEditing((prev) => !prev));
   };
@@ -26,18 +38,26 @@ const DashboardItem = ({ board, deleteBoard }) => {
   return (
     <BoardItem>
       {isEditing ? (
-        <StyledForm onSubmit={updateBoardName}>
+        <StyledForm onSubmit={handleUpdateBoardName}>
           <StyledInput
             name="input"
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
           />
-          <button type="submit">
-            <Check />
-          </button>
-          <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
-            <X />
-          </button>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <button type="submit">
+              <Check />
+            </button>
+          )}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
+              <X />
+            </button>
+          )}
         </StyledForm>
       ) : (
         <>
@@ -47,7 +67,7 @@ const DashboardItem = ({ board, deleteBoard }) => {
           <button onClick={() => setIsEditing((prev) => !prev)}>
             <SquarePen />
           </button>
-          <button onClick={() => deleteBoard(board._id)}>
+          <button onClick={() => dispatch(deleteBoard(board._id))}>
             <Trash2 />
           </button>
         </>

@@ -31,14 +31,3 @@ export const Title = styled.span`
   border-radius: 5px;
   align-self: flex-start;
 `;
-
-export const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-export const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-`;

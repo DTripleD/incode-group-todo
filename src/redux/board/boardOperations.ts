@@ -1,13 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { instance } from "../operations";
+import { instance } from "../dashboard/dashboardOperations";
 
 export const getColums = createAsyncThunk(
   "board/getColums",
   async (boardId: string, { rejectWithValue }) => {
     try {
       const response = await instance.get(`dashboard/${boardId}`);
-
-      console.log(response.data.dashboard);
 
       if (response.status === 200) {
         return response.data.dashboard;
@@ -40,8 +38,6 @@ export const addCard = createAsyncThunk(
         data
       );
 
-      console.log(response.data.dashboard);
-
       if (response.status === 200) {
         return response.data.dashboard;
       } else {
@@ -59,16 +55,13 @@ export const deleteCard = createAsyncThunk(
   "board/deleteCard",
   async (
     data: {
-      dashboardId: string;
+      dashboardId: string | undefined;
       itemId: string;
     },
     { rejectWithValue }
   ) => {
     try {
-      console.log(data);
       const response = await instance.delete("/dashboard/deleteItem", { data });
-
-      console.log(response);
 
       if (response.status === 200) {
         return response.data.dashboard;
@@ -83,15 +76,51 @@ export const deleteCard = createAsyncThunk(
   }
 );
 
-// export const deleteCardd = async (data) => {
-//   return fetch(
-//     "https://incode-group-server.onrender.com/dashboard/deleteItem",
-//     {
-//       method: "DELETE",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(data),
-//     }
-//   ).then((res) => res.json());
-// };
+export const updateOnDragEnd = createAsyncThunk(
+  "todo/updateOnDragEnd",
+  async (
+    data: { dashboardId: string; newBoards: object },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await instance.post("/dashboard/updateBoards", data);
+
+      if (response.status === 200) {
+        return response.data.dashboard;
+      } else {
+        return rejectWithValue("Failed to delete cocktail");
+      }
+    } catch (error) {
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
+    }
+  }
+);
+
+export const updateCardName = createAsyncThunk(
+  "todo/updateCardName",
+  async (
+    data: {
+      dashboardId: string;
+      itemId: string;
+      newTitle: string;
+      newDescription: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await instance.put("dashboard/updateItemTitle", data);
+
+      if (response.status === 200) {
+        return response.data.dashboard;
+      } else {
+        return rejectWithValue("Failed to delete cocktail");
+      }
+    } catch (error) {
+      return rejectWithValue({
+        payload: (error as { message: string }).message,
+      });
+    }
+  }
+);

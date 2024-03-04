@@ -1,30 +1,23 @@
-# React + TypeScript + Vite
+<h1 align="center">Incode Group Test Task</h1>
+<h2 align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Backend
 
-Currently, two official plugins are available:
+The backend is available at the [link](https://github.com/DTripleD/incode-group-server)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies and libraries used to create the project:
 
-## Expanding the ESLint configuration
+- This project was created with the help of [React + TypeScript + Vite](https://github.com/vitejs/vite)
+- [Emotion Styled](https://emotion.sh/docs/introduction)
+- [Hello Pangea DnD](https://dnd.hellopangea.com/?path=/story/welcome--page)
+- [Redux Toolkit](https://redux-toolkit.js.org)
+- [Axios](https://axios-http.com/ru/docs/intro)
+- [Lucide React](https://lucide.dev/guide/packages/lucide-react)
+- [React Router Dom](https://reactrouter.com/en/main)
+- [React Loader Spinner](https://mhnpd.github.io/react-loader-spinner/)
+- [Modern Normalize](https://github.com/sindresorhus/modern-normalize)
+- [react-redux](https://react-redux.js.org/)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Live page
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Live page can be accessed via [https://dtripled.github.io/project-drink-master/](https://dtripled.github.io/project-drink-master/)
