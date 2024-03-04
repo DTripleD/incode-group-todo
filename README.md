@@ -4,6 +4,7 @@
 ## Backend
 
 The backend is available at the [link](https://github.com/DTripleD/incode-group-server)
+Due to the fact that the database is free, if you do not use it for a long time, it may fall asleep. To awaken it, you just need to wait a little longer.
 
 ## Technologies and libraries used to create the project:
 
@@ -21,4 +22,4 @@ The backend is available at the [link](https://github.com/DTripleD/incode-group-
 
 ## Live page
 
-Live page can be accessed via [https://dtripled.github.io/project-drink-master/](https://dtripled.github.io/project-drink-master/)
+Live page can be accessed via [https://dtripled.github.io/incode-group-todo/](https://dtripled.github.io/incode-group-todo/)
